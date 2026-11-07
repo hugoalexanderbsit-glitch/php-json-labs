@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PHP + JSON + AJAX</title>
+</head>
+<body>
+    <h2>Welcome Form</h2>
+
+    <form id="nameForm">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name">
+        <button type="submit">Send</button>
+    </form>
+
+    <p id="message"></p>
+    <pre id="jsonOutput"></pre>
+
+    <script>
+        const form = document.getElementById("nameForm");
+        const message = document.getElementById("message");
+        const jsonOutput = document.getElementById("jsonOutput");
+
+        form.addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            fetch("lab5_process.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name: document.getElementById("name").value })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    message.style.color = data.status === "success" ? "black" : "red";
+                    message.textContent = data.message;
+                    jsonOutput.textContent = JSON.stringify(data);
+                })
+                .catch(() => {
+                    message.style.color = "red";
+                    message.textContent = "Something went wrong. Open this page through a PHP server (XAMPP or php -S).";
+                    jsonOutput.textContent = "";
+                });
+        });
+    </script>
+</body>
+</html>
